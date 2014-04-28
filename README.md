@@ -1,6 +1,3 @@
-moviejure
-=========
-
 # moviejure
 
 Service provides information about movies and series.
