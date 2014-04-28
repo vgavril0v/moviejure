@@ -1,10 +1,13 @@
-# service
+moviejure
+=========
 
-A Clojure library designed to ... well, that part is up to you.
+# moviejure
+
+Service provides information about movies and series.
 
 ## Usage
 
-FIXME
+open https://moviejure.herokuapp.com/
 
 ## License
 
