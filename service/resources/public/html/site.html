@@ -1,0 +1,49 @@
+<html>
+    <body>
+        <div class="site-header">
+            <span style="margin-right:30px;"><a href="/movies">Popular movies</a></span>
+            <span style="margin-right:30px;"><a href="/series">Popular series</a></span>
+            <span><a href="/favorites">Favorites</a></span>
+        </div>
+
+        <div id="login-header">
+            <span id="login"></span>
+
+            <div id="register-form" style="display:none" class="register-form">
+                Name: <input id="reg-user-name" type="text" maxlength="100" class="form-control"><br/>
+                Login: <input id="reg-user-login" type="text" maxlength="100" class="form-control"><br/>
+                Password: <input id="reg-user-password" type="password" class="form-control"><br/>
+                <a id="save-btn" href="javascript:;" class="btn btn-primary" onclick="client.register.try_create_user()">Save</a>
+                <a href="javascript:;" class="btn btn-default" onclick="client.register.close_form()">Cancel</a>
+            </div>
+
+            <div id="login-form" style="display:none" class="register-form">
+                Login: <input id="user-login" type="text" maxlength="100" class="form-control"><br/>
+                Password: <input id="user-password" type="password" class="form-control"><br/>
+                <a id="save-btn" href="javascript:;" class="btn btn-primary" onclick="client.login.try_login_user()">Login</a>
+                <a href="javascript:;" class="btn btn-default" onclick="client.login.close_form()">Cancel</a>
+            </div>
+        </div>
+
+        <span id="login-refs">
+            <a href="javascript:;" onclick="client.login.show_form()">login</a>
+            |
+            <a href="javascript:;" onclick="client.register.show_form()">sign up</a>
+        </span>
+
+        <span id="logout-refs">
+            <span id="logged-in-as"/> <a href="javascript:;" onclick="client.login.try_logout_user()">logout</a>
+        </span>
+
+
+        <div id="content">
+            <div id="inner-content">
+                <div id="movie-item">
+                    <h4 id="item-title" class="item-title"></h4>
+                    <img id="item-cover"/>
+
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
