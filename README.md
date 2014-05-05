@@ -8,17 +8,17 @@ open https://moviejure.herokuapp.com/
 
 added:
 
-user sign up
-user login
-user logout
-simple list of popular movies
+user sign up, 
+user login, 
+user logout, 
+simple list of popular movies, 
 simple list of popular series
 
 to be done:
 
-favorites
-comments
-search
+favorites, 
+comments, 
+search, 
 look and feel
 
 
