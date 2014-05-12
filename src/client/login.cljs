@@ -18,8 +18,6 @@
   (ef/at "#login"  (ef/content (client.core.login-refs))))
 
 (defn ^:export try_login_user []
-      (.log js/console (ef/from "#user-login" (ef/read-form-input)))
-  (.log js/console (ef/from "#user-password" (ef/read-form-input)))
   (POST "/user/login"
         {:params {:login (ef/from "#user-login" (ef/read-form-input))
                   :password (ef/from "#user-password" (ef/read-form-input))}

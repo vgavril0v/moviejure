@@ -41380,8 +41380,6 @@ client.login.user_logged_out = function user_logged_out(data) {
   return enfocus.core.at.call(null, "#login", enfocus.core.content.call(null, client.core.login_refs.call(null)));
 };
 client.login.try_login_user = function try_login_user() {
-  console.log(enfocus.core.from.call(null, "#user-login", enfocus.core.read_form_input.call(null)));
-  console.log(enfocus.core.from.call(null, "#user-password", enfocus.core.read_form_input.call(null)));
   return ajax.core.POST.call(null, "/user/login", new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "params", "params", 4313443576), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "login", "login", 1117053659), enfocus.core.from.call(null, "#user-login", enfocus.core.read_form_input.call(null)), new cljs.core.Keyword(null, "password", "password", 2230889997), enfocus.core.from.call(null, "#user-password", enfocus.core.read_form_input.call(null))], null), 
   new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.login.user_logged_in, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
 };
