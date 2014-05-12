@@ -12,7 +12,7 @@ user sign up,
 user login, 
 user logout, 
 simple list of popular movies, 
-simple list of popular series
+simple list of popular series 
 
 to be done:
 
