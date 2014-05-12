@@ -4,10 +4,10 @@
   (:require-macros [enfocus.macros :as em]))
 
 (defn ^:export show_form []
-  (ef/at "#login-form" (ef/set-attr :style "display:block;")))
+  (ef/at "#login-form" (ef/set-style :display "block")))
 
 (defn ^:export close_form []
-  (ef/at "#login-form" (ef/set-attr :style "display:none;")))
+  (ef/at "#login-form" (ef/set-style :display "none")))
 
 (defn user-logged-in [data]
   (ef/at "#login"  (ef/content (client.core.logout-refs)))

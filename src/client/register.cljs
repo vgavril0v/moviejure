@@ -4,10 +4,10 @@
   (:require-macros [enfocus.macros :as em]))
 
 (defn ^:export show_form []
-  (ef/at "#register-form" (ef/set-attr :style "display:block;")))
+  (ef/at "#register-form" (ef/set-style :display "block")))
 
 (defn ^:export close_form []
-  (ef/at "#register-form" (ef/set-attr :style "display:none;")))
+  (ef/at "#register-form" (ef/set-style :display "none")))
 
 (defn user-saved [response]
   (close_form))

@@ -1,6 +1,6 @@
 <html>
     <body>
-        <div class="site-header">
+        <div class="site-header" align="center">
             <span style="margin-right:30px;"><a href="/movies">Popular movies</a></span>
             <span style="margin-right:30px;"><a href="/series">Popular series</a></span>
             <span><a href="/favorites">Favorites</a></span>
@@ -9,7 +9,7 @@
         <div id="login-header">
             <span id="login"></span>
 
-            <div id="register-form" style="display:none" class="register-form">
+            <div id="register-form" style="display:none;" class="register-form">
                 Name: <input id="reg-user-name" type="text" maxlength="100" class="form-control"><br/>
                 Login: <input id="reg-user-login" type="text" maxlength="100" class="form-control"><br/>
                 Password: <input id="reg-user-password" type="password" class="form-control"><br/>
@@ -23,9 +23,13 @@
                 <a id="save-btn" href="javascript:;" class="btn btn-primary" onclick="client.login.try_login_user()">Login</a>
                 <a href="javascript:;" class="btn btn-default" onclick="client.login.close_form()">Cancel</a>
             </div>
+
+            <div id="error-div" style="display:none" class="register-form">
+                <span id="error-message"/> <a href="javascript:;" onclick="client.core.hide_error()">x</a>
+            </div>
         </div>
 
-        <span id="login-refs">
+        <span id="login-refs" align="right">
             <a href="javascript:;" onclick="client.login.show_form()">login</a>
             |
             <a href="javascript:;" onclick="client.register.show_form()">sign up</a>
@@ -38,12 +42,34 @@
 
         <div id="content">
             <div id="inner-content">
-                <div id="movie-item">
-                    <h4 id="item-title" class="item-title"></h4>
-                    <img id="item-cover"/>
+                <div id="movie-row" class="row">
+                    <div id="first-movie-item" class="col-md-12">
+                        <div style="float: left">
+                            <img class="shadow" id="item-cover" width="130">
+                        </div>
+                        <div style="margin-left:13%;">
+                            <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
+                            <p id="item-overview"/>
+                            <div class="favourite" width="15" height="15" id="favorite"></div>
 
+                            <p id="item-genres"></p>
+                            <a id="item-url" target="_blank"/>
+                        </div>
+                    </div>
+                    <div id="movie-item" class="col-md-4">
+                        <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
+                        <img  class="shadow" id="item-cover" />
+
+                        <div class="favourite" width="15" height="15"  id="favorite"></div>
+                    </div>
                 </div>
             </div>
+            </br></br></br>
         </div>
-    </body>
+
+<div id="pager" class="col-md-12">
+    <a href="javascript:;" id="prev-page">Prev page</a> | <a href="javascript:;" id="next-page">Next page</a>
+</div>
+
+</body>
 </html>

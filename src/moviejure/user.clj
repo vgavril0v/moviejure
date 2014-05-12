@@ -5,7 +5,7 @@
         korma.core
         compojure.core
         compojure.handler
-        moviejure.db
+        [moviejure.db :as db]
         [moviejure.response :as resp]))
 
 (defentity users)
@@ -18,11 +18,8 @@
         padding (apply str (repeat (- size (count sig)) "0"))]
     (str padding sig)))
 
-(defn- get-current-date []
-  (java.sql.Timestamp. (.getTime (java.util.Date.))))
-
 (defn- create-user [name login password]
-   (if-not (insert users (values {:name name :login login  :password_hash (md5 password) :created (get-current-date)}))
+   (if-not (insert users (values {:name name :login login  :password_hash (md5 password) :created (db/get-current-date)}))
     (resp/edn () 420)
     (resp/edn ())))
 

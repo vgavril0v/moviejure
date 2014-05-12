@@ -1,1 +1,18 @@
-.register-form{position:fixed; background-color: #ffffff; padding: 10px 10px 10px 10px}
+.register-form {position:fixed; background-color: #ffffff; padding: 10px 10px 10px 10px; z-index:10; box-shadow: -4px 2px 10px -5px rgba(0, 0, 0, 0.55);}
+
+
+div.favourite{
+  background: transparent url('/img/heart.png') no-repeat;
+  width:16px;
+  height: 16px;
+  cursor:pointer
+}
+
+div.favourite:hover, div.favourite.selected {
+  background: transparent url('/img/heart-selected.png') no-repeat;
+}
+
+
+img.shadow {
+    box-shadow: -4px 2px 10px -5px rgba(0, 0, 0, 0.55);
+}
