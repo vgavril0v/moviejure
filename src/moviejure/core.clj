@@ -57,6 +57,7 @@
   (context "/series" [] series-routes)
   (context "/user" [] user-routes)
   (context "/user_content" [] user-content-routes)
+  (GET "/config" [] (resp/edn (configuration)))
   (GET "/req" request (str request))
   (route/resources "/")
   (route/not-found "Not found!"))

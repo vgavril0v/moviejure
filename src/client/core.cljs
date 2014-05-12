@@ -14,19 +14,21 @@
 (em/defsnippet login-refs site-template "#login-refs" [])
 (em/defsnippet logout-refs site-template "#logout-refs" [])
 (em/defsnippet site-content site-template "#content" [])
-(em/defsnippet pager site-template "#pager" [])
+(em/defsnippet pager site-template "#pager" [page-num total-pages]
+               "#current_page" (ef/content (str page-num))
+               "#total_pages" (ef/content (str total-pages)))
 
 (em/defsnippet movie-item site-template "#movie-item" [{:keys [id title name release_date first_air_date poster_path favorite]}]
                "#item-title" (ef/content (or title name))
-               "#item-date" (ef/content (str "(" (subs (or release_date first_air_date)  0 4) ")"))
-               "#item-cover" (ef/set-attr :src (str "http://image.tmdb.org/t/p/w92/" poster_path))
+               "#item-date" (ef/content (get-date-year (or release_date first_air_date)))
+               "#item-cover" (set-poster-source poster_path (get-poster-size second))
                "#favorite" (client.user_content.favorite-handler id favorite))
 
 (em/defsnippet first-movie-item site-template "#first-movie-item" [{:keys [id title name poster_path overview release_date first_air_date genres homepage favorite]}]
                "#item-title" (ef/content (or title name))
-               "#item-date" (ef/content (str "(" (subs (or release_date first_air_date)  0 4) ")"))
+               "#item-date"  (ef/content (get-date-year (or release_date first_air_date)))
                "#item-overview" (ef/content overview)
-               "#item-cover" (ef/set-attr :src (str "http://image.tmdb.org/t/p/w154/" poster_path))
+               "#item-cover" (set-poster-source poster_path (get-poster-size second))
                "#item-genres" (ef/content (clojure.string/join ", " (map :name genres)))
                "#item-url" (ef/do-> (ef/content homepage)
                                     (ef/set-attr :href homepage))
@@ -36,6 +38,20 @@
 (em/defsnippet movie-row site-template "#movie-row" [inner-tpl data]
                "#movie-row"  (ef/content (map inner-tpl data)))
 
+(def config (atom {}))
+
+(defn set-config [data] (swap! config merge data))
+
+(defn set-poster-source [src size]
+  (ef/set-attr :src (if src (str (:base_url (:images @config)) size src) "/img/noimage.jpg")))
+
+(defn get-poster-size [handler] (handler (:poster_sizes (:images @config))))
+
+(defn get-date-year [date]
+  (if date
+  (str "(" (subs date  0 4) ")")
+   ""))
+
 (defn set-pager [page-num total-pages load-handler]
   (if (< page-num total-pages)
     (ef/at "#next-page" (ev/listen :click #(load-handler (inc page-num))))
@@ -43,9 +59,7 @@
     )
   (if (> page-num 1)
     (ef/at "#prev-page" (ev/listen :click #(load-handler (dec page-num))))
-    (ef/at "#prev-page" (ef/set-style :color "grey"))
-    )
-  )
+    (ef/at "#prev-page" (ef/set-style :color "grey"))))
 
 (defn popular-content-list [data load-handler]
   (let [page (:page data)
@@ -56,7 +70,7 @@
     (ef/at "#inner-content"
            (ef/do->
             (ef/content (movie-row first-movie-item (list first-movie)))
-            (ef/append (pager))
+            (ef/append (pager page total-pages))
             (ef/append (map #(movie-row movie-item %) next-movies))
             ))
   (set-pager page total-pages load-handler)))
@@ -104,12 +118,19 @@
           (ef/append (site-content))))
   (show-login-header))
 
+(defn load-config []
+  (GET "/config"
+       {:handler set-config
+        :error-handler error-handler}))
+
 (defn start-movies []
   (show-header)
+  (load-config)
   (try-load-popular-movies 1))
 
 (defn start-series []
   (show-header)
+  (load-config)
   (try-load-popular-series 1))
 
 (defroute "/" [] (em/wait-for-load (start-movies)))
