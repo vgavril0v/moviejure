@@ -13,10 +13,11 @@ user login,
 user logout, 
 simple list of popular movies, 
 simple list of popular series 
+set favorites
+paging
 
 to be done:
 
-favorites, 
 comments, 
 search, 
 look and feel
