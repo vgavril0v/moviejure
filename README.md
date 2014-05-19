@@ -12,10 +12,10 @@ user sign up,
 user login,
 user logout,
 simple list of popular movies,
-simple list of popular series
-set favorites
-paging
-movie card
+simple list of popular series,
+set favorites,
+paging,
+movie card,
 comments
 
 to be done:
