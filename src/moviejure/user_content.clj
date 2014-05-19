@@ -44,7 +44,9 @@
 (defn get-comments [content-id]
   (select user_comment
           (fields :comment :created [:users.name :user-name])
-          (join users (= :users.id :user_comment.user_id)) (where {:content_id content-id})))
+          (join users (= :users.id :user_comment.user_id))
+          (where {:content_id content-id})
+          (order :created :DESC)))
 
 (defroutes user-content-routes
   (POST "/set_favorite" [content-id favorite :as {{user :user} :session}] (set-favorite-response user content-id favorite))
