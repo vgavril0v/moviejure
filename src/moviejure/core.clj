@@ -45,11 +45,13 @@
 
 (defroutes movie-routes
   (GET "/" [] (get-index-page-response))
-  (GET "/popular" [page :as {{user :user} :session}] (popular-movie-list page user)))
+  (GET "/popular" [page :as {{user :user} :session}] (popular-movie-list page user))
+  (GET "/:id" [id] (resp/edn (movie-info id))))
 
 (defroutes series-routes
   (GET "/" [] (get-index-page-response))
-  (GET "/popular" [page :as {{user :user} :session}] (popular-series-list page user)))
+  (GET "/popular" [page :as {{user :user} :session}] (popular-series-list page user))
+  (GET "/:id" [id] (resp/edn (series-info id))))
 
 (defroutes compojure-handler
   (GET "/" [] (get-index-page))

@@ -24,7 +24,7 @@
                 <a href="javascript:;" class="btn btn-default" onclick="client.login.close_form()">Cancel</a>
             </div>
 
-            <div id="error-div" style="display:none" class="register-form">
+            <div id="error-div" style="display:none;z-index:15" class="register-form">
                 <span id="error-message"/> <a href="javascript:;" onclick="client.core.hide_error()">x</a>
             </div>
         </div>
@@ -48,7 +48,7 @@
                             <img class="shadow" id="item-cover">
                         </div>
                         <div style="margin-left:15%;">
-                            <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
+                            <a href="javascript:;" id="card-ref"><h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4></a>
                             <p id="item-overview"/>
                             <div class="favourite" width="15" height="15" id="favorite"></div>
 
@@ -57,19 +57,61 @@
                         </div>
                     </div>
                     <div id="movie-item" class="col-md-4">
-                        <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
-                        <img  class="shadow" id="item-cover" />
+                        <a href="javascript:;" id="card-ref">
+                            <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
+                            <img  class="shadow" id="item-cover" /></a>
                         <br/><br/>
                         <div class="favourite" width="15" height="15"  id="favorite"></div>
                     </div>
                 </div>
             </div>
-            </br></br></br>
-        </div>
+        </br></br></br>
+</div>
 
 <div id="pager" class="col-md-12">
     <a href="javascript:;" id="prev-page">Prev page</a> | <a href="javascript:;" id="next-page">Next page</a> (currently on page: <span id="current_page"/> of <span id="total_pages"/>)
 </div>
 
+
+<div id="card" style="display:none;width:60%;height: 90%;" class="register-form">
+    <div id="movie-card" style="max-height:100%;overflow:auto;">
+        <div align="right">
+            <a href="javascript:;" onclick="client.core.hide_card()">x</a>
+        </div>
+        <div style="height: 1%; overflow: hidden;">
+            <div style="float: left">
+                <img class="shadow" id="item-cover">
+            </div>
+            <div style="margin-left:20%;">
+                <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
+                <p id="item-overview"/>
+                <div class="favourite" width="15" height="15" id="favorite"></div>
+
+                <p id="item-genres"></p>
+                <a id="item-url" target="_blank"/>
+            </div>
+        </div>
+        <div style="width:100%;">
+            Comment: <textarea id="user-comment" type="text" class="form-control" style="height:100px"/><br/>
+            <a id="add-comment" href="javascript:;" class="btn btn-primary">Post</a>
+            <br/> <br/>
+            <div id="user-comments">
+            <div id="comment" style="border-top: solid 1px lightgrey">
+                <span id="comment-user-name"/> <br/>
+
+                <span id="comment-text"/><br/>
+
+                 <span id="comment-date"/>
+            </div>
+        </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div style="width:100%;height:100%;position:fixed;left:0px;top:0px;z-index:1;display:none" id="card-closer" onclick="client.core.hide_card()">
+
+</div>
 </body>
 </html>

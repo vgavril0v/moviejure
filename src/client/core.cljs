@@ -18,13 +18,28 @@
                "#current_page" (ef/content (str page-num))
                "#total_pages" (ef/content (str total-pages)))
 
-(em/defsnippet movie-item site-template "#movie-item" [{:keys [id title name release_date first_air_date poster_path favorite]}]
+(em/defsnippet card-closer site-template "#card-closer" [])
+(em/defsnippet card site-template "#card" [])
+
+(em/defsnippet movie-item site-template "#movie-item" [{:keys [id title name release_date first_air_date poster_path favorite type]}]
                "#item-title" (ef/content (or title name))
                "#item-date" (ef/content (get-date-year (or release_date first_air_date)))
                "#item-cover" (set-poster-source poster_path (get-poster-size second))
-               "#favorite" (client.user_content.favorite-handler id favorite))
+               "#favorite" (client.user_content.favorite-handler id favorite)
+               "#card-ref" (ev/listen :click #(load-content-card id type)))
 
-(em/defsnippet first-movie-item site-template "#first-movie-item" [{:keys [id title name poster_path overview release_date first_air_date genres homepage favorite]}]
+(em/defsnippet first-movie-item site-template "#first-movie-item" [{:keys [id title name poster_path overview release_date first_air_date genres homepage favorite type]}]
+               "#item-title" (ef/content (or title name))
+               "#item-date"  (ef/content (get-date-year (or release_date first_air_date)))
+               "#item-overview" (ef/content overview)
+               "#item-cover" (set-poster-source poster_path (get-poster-size second))
+               "#item-genres" (ef/content (clojure.string/join ", " (map :name genres)))
+               "#item-url" (ef/do-> (ef/content homepage)
+                                    (ef/set-attr :href homepage))
+               "#favorite" (client.user_content.favorite-handler id favorite)
+               "#card-ref" (ev/listen :click #(load-content-card id type)))
+
+(em/defsnippet movie-card site-template "#movie-card" [{:keys [id title name poster_path overview release_date first_air_date genres homepage favorite]}]
                "#item-title" (ef/content (or title name))
                "#item-date"  (ef/content (get-date-year (or release_date first_air_date)))
                "#item-overview" (ef/content overview)
@@ -34,9 +49,14 @@
                                     (ef/set-attr :href homepage))
                "#favorite" (client.user_content.favorite-handler id favorite))
 
-
 (em/defsnippet movie-row site-template "#movie-row" [inner-tpl data]
                "#movie-row"  (ef/content (map inner-tpl data)))
+
+(em/defsnippet user-comment site-template "#comment" [{:keys [comment created user-name]}]
+               "#comment-date" (ef/content (str (.toLocaleDateString created) " " (.toLocaleTimeString created)))
+               "#comment-user-name" (ef/content user-name)
+               "#comment-text" (ef/content comment)
+               )
 
 (def config (atom {}))
 
@@ -72,7 +92,7 @@
             (ef/content (movie-row first-movie-item (list first-movie)))
             (ef/append (pager page total-pages))
             (ef/append (map #(movie-row movie-item %) next-movies))
-            ))
+            (ef/append (card-closer))))
   (set-pager page total-pages load-handler)))
 
 (defn popular-movie-list [data]
@@ -86,6 +106,34 @@
   (ef/at "#error-div" (ef/set-style :display "block")))
 
 (defn ^:export hide_error [] (ef/at "#error-div" (ef/set-style :display "none")))
+
+(defn ^:export hide_card []
+  (ef/at "#card-closer" (ef/set-style :display "none"))
+  (ef/at "#card" (ef/set-style :display "none")))
+
+(defn load-content-card [id type]
+  (GET (str "/" (if (= type :movie) "movies" "series")  "/" id)
+       {:handler show-content-card
+        :error-handler error-handler}))
+
+(defn show-content-card [data]
+  (let [id (:id data)]
+    (ef/at "#card-closer" (ef/set-style :display "block"))
+    (ef/at "#card" (ef/do-> (ef/set-style :display "block")
+                          (ef/content (movie-card data))))
+    (ef/at "#add-comment" (ef/do->
+                         (ev/remove-listeners :click)
+                         (ev/listen :click #(client.user_content.try_add_comment id))))
+    (load-card-comments id)))
+
+(defn show-card-comments [data]
+  (ef/at "#user-comments" (ef/content (map user-comment data)))
+  )
+
+(defn load-card-comments [id]
+  (GET (str "/user_content/" id "/comments")
+       {:handler show-card-comments
+        :error-handler error-handler}))
 
 (defn error-handler [{:keys [status status-text]}]
   (show-error status-text))
@@ -115,7 +163,9 @@
          (ef/do->
           (ef/content (login-header))
           (ef/append (site-header))
-          (ef/append (site-content))))
+          (ef/append (card))
+          (ef/append (site-content))
+          ))
   (show-login-header))
 
 (defn load-config []

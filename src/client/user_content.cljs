@@ -15,6 +15,9 @@
 (defn favorite-set [{:keys [content-id favorite]}]
     (ef/at (get-favorite-id-selector content-id) (favorite-handler content-id favorite)))
 
+(defn comment-added [data]
+    (ef/at "#user-comments" (ef/prepend (client.core.user-comment data))))
+
 (defn error-handler [data]
   (if-let [resp (:response data)]
     (do
@@ -38,3 +41,12 @@
          :params {:content-id content-id
                   :favorite favorite}
          :error-handler error-handler}))
+
+(defn ^:export try_add_comment [content-id]
+  (POST "/user_content/add_comment"
+        {:handler comment-added
+         :params {:content-id content-id
+                  :comment (ef/from "#user-comment" (ef/read-form-input))}
+         :error-handler error-handler})
+  (ef/at "#user-comment" (ef/set-form-input "")))
+

@@ -21,18 +21,19 @@
 (defn series-info [id]
    (call-tmdb (str "tv/" id)))
 
-(defn- prepare-list [l info-handler]
+(defn- prepare-list [l info-handler type]
   (let [res (:results l)]
-   (assoc l :results (conj (next res) (info-handler (:id (first res)))))))
+   (assoc l :results (map #(assoc % :type type)
+                      (conj (next res) (info-handler (:id (first res))))))))
 
 (defn- pager-url [url page]
   (if page (str url "?page=" page) url))
 
 (defn popular-movies [page]
-   (prepare-list (call-tmdb (pager-url "movie/popular" page)) movie-info))
+   (prepare-list (call-tmdb (pager-url "movie/popular" page)) movie-info :movie))
 
 (defn popular-series [page]
-   (prepare-list (call-tmdb (pager-url "tv/popular" page)) series-info))
+   (prepare-list (call-tmdb (pager-url "tv/popular" page)) series-info :series))
 
 
 
