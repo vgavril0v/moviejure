@@ -11,17 +11,15 @@ added:
 user sign up,
 user login,
 user logout,
-simple list of popular movies,
-simple list of popular series,
+column list of popular movies,
+column list of popular series,
 set favorites,
 paging,
 movie card,
-comments
-
-to be done:
-
+comments,
 favorites list,
 look and feel
+
 
 
 ## License

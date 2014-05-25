@@ -1,9 +1,9 @@
 <html>
     <body>
         <div class="site-header" align="center">
-            <span style="margin-right:30px;"><a href="/movies">Popular movies</a></span>
-            <span style="margin-right:30px;"><a href="/series">Popular series</a></span>
-            <span><a href="/favorites">Favorites</a></span>
+            <a href="/movies" class="navigation">Popular movies</a>
+            <a href="/series" class="navigation">Popular series</a>
+            <a href="/favorites" class="navigation">Favorites</a>
         </div>
 
         <div id="login-header">
@@ -43,12 +43,13 @@
         <div id="content">
             <div id="inner-content">
                 <div id="movie-row" class="row">
-                    <div id="first-movie-item" class="col-md-12">
+                    <div id="first-movie-item" class="col-md-12" style="padding-bottom:20px">
                         <div style="float: left">
                             <img class="shadow" id="item-cover">
                         </div>
                         <div style="margin-left:15%;">
                             <a href="javascript:;" id="card-ref"><h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4></a>
+                            <p><span id="release-date-title"></span> <span id="release-date"></p>
                             <p id="item-overview"/>
                             <div class="favourite" width="15" height="15" id="favorite"></div>
 
@@ -68,7 +69,7 @@
         </br></br></br>
 </div>
 
-<div id="pager" class="col-md-12">
+<div id="pager" class="col-md-12" style="padding-bottom:10px">
     <a href="javascript:;" id="prev-page">Prev page</a> | <a href="javascript:;" id="next-page">Next page</a> (currently on page: <span id="current_page"/> of <span id="total_pages"/>)
 </div>
 
@@ -84,8 +85,9 @@
             </div>
             <div style="margin-left:20%;">
                 <h4><span id="item-title"/> <span style="color: #666666;font-weight: normal;font-size:smaller" id="item-date"/></h4>
+                <p><span id="release-date-title"></span> <span id="release-date"></p>
                 <p id="item-overview"/>
-                <div class="favourite" width="15" height="15" id="favorite"></div>
+                <div class="favourite" width="15" height="15" id="favorite_card"></div>
 
                 <p id="item-genres"></p>
                 <a id="item-url" target="_blank"/>
@@ -108,6 +110,10 @@
 
 
     </div>
+</div>
+
+<div id="not-logged-in">
+ Please log in
 </div>
 
 <div style="width:100%;height:100%;position:fixed;left:0px;top:0px;z-index:1;display:none" id="card-closer" onclick="client.core.hide_card()">

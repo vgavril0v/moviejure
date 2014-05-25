@@ -33,30 +33,53 @@
   (if user
     (let [res (:results l)
           fav (get-favorites (:id user))]
-       (if true (assoc l :results (merge-favorites res fav)) l))
+       (if (> (count fav) 0) (assoc l :results (merge-favorites res fav)) l))
     l))
 
-;(some #(constantly true) fav)
+(defn- add-info-favorite [info id user]
+  (if user
+    (assoc info :favorite (is-favorite (:id user) id))
+    info
+  ))
+
+(defn- get-content-info [id type]
+  (if (= type :movie) (movie-info id) (series-info id)))
+
+(defn- get-favorite-content [user-id page]
+  (let [fav (get-favorites-paged user-id page 10)]
+    (assoc fav :results (map #(merge % (get-content-info (:content_id %) (:type %))) (:results fav)))))
+
+
 (defn popular-movie-list [page user]
   (resp/edn (add-favorites (popular-movies page) user)))
 
 (defn popular-series-list [page user]
   (resp/edn (add-favorites (popular-series page) user)))
 
+(defn favorite-list [page user]
+  (resp/edn (get-favorite-content (:id user) page)))
+
+
 (defroutes movie-routes
   (GET "/" [] (get-index-page-response))
   (GET "/popular" [page :as {{user :user} :session}] (popular-movie-list page user))
-  (GET "/:id" [id] (resp/edn (movie-info id))))
+  (GET "/:id" [id :as {{user :user} :session}] (resp/edn (add-info-favorite (movie-info id) (read-string id) user))))
 
 (defroutes series-routes
   (GET "/" [] (get-index-page-response))
   (GET "/popular" [page :as {{user :user} :session}] (popular-series-list page user))
-  (GET "/:id" [id] (resp/edn (series-info id))))
+  (GET "/:id" [id :as {{user :user} :session}] (resp/edn (add-info-favorite (series-info id) (read-string id) user))))
+
+(defroutes favorite-routes
+  (GET "/" [] (get-index-page-response))
+  (GET "/list" [page :as {{user :user} :session}] (favorite-list (read-string page) user))
+  )
 
 (defroutes compojure-handler
   (GET "/" [] (get-index-page))
   (context "/movies" [] movie-routes)
   (context "/series" [] series-routes)
+  (context "/favorites" [] favorite-routes)
   (context "/user" [] user-routes)
   (context "/user_content" [] user-content-routes)
   (GET "/config" [] (resp/edn (configuration)))

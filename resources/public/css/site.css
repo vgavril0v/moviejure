@@ -14,5 +14,13 @@ div.favourite:hover, div.favourite.selected {
 
 
 img.shadow {
-    box-shadow: -4px 2px 10px -5px rgba(0, 0, 0, 0.55);
+  box-shadow: -4px 2px 10px -5px rgba(0, 0, 0, 0.55);
+}
+
+.site-header{
+  background-color: #4FC1E9; margin-bottom: 10px
+}
+
+a.navigation{
+  margin-right:30px;font-size:large; color: #FFFFFF
 }

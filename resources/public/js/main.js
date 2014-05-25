@@ -39852,15 +39852,21 @@ client.user_content.get_favorite_id = function get_favorite_id(id) {
 client.user_content.get_favorite_id_selector = function get_favorite_id_selector(id) {
   return[cljs.core.str("#"), cljs.core.str(client.user_content.get_favorite_id.call(null, id))].join("");
 };
-client.user_content.favorite_class_handler = function favorite_class_handler(id, favorite) {
+client.user_content.favorite_class_handler = function favorite_class_handler(favorite) {
   return enfocus.core.do__GT_.call(null, enfocus.core.add_class.call(null, cljs.core.truth_(favorite) ? "selected" : ""), enfocus.core.remove_class.call(null, cljs.core.not.call(null, favorite) ? "selected" : ""));
 };
-client.user_content.favorite_set = function favorite_set(p__9746) {
-  var map__9748 = p__9746;
-  var map__9748__$1 = cljs.core.seq_QMARK_.call(null, map__9748) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9748) : map__9748;
-  var favorite = cljs.core.get.call(null, map__9748__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
-  var content_id = cljs.core.get.call(null, map__9748__$1, new cljs.core.Keyword(null, "content-id", "content-id", 1278408289));
-  return enfocus.core.at.call(null, client.user_content.get_favorite_id_selector.call(null, content_id), client.user_content.favorite_handler.call(null, content_id, favorite));
+client.user_content.favorite_set = function favorite_set(with_card, p__13273) {
+  var map__13275 = p__13273;
+  var map__13275__$1 = cljs.core.seq_QMARK_.call(null, map__13275) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13275) : map__13275;
+  var favorite = cljs.core.get.call(null, map__13275__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
+  var content_type = cljs.core.get.call(null, map__13275__$1, new cljs.core.Keyword(null, "content-type", "content-type", 1799574400));
+  var content_id = cljs.core.get.call(null, map__13275__$1, new cljs.core.Keyword(null, "content-id", "content-id", 1278408289));
+  enfocus.core.at.call(null, client.user_content.get_favorite_id_selector.call(null, content_id), client.user_content.favorite_handler.call(null, content_id, content_type, favorite));
+  if (cljs.core.truth_(with_card)) {
+    return enfocus.core.at.call(null, "#favorite_card", client.user_content.favorite_class_handler.call(null, favorite));
+  } else {
+    return null;
+  }
 };
 client.user_content.comment_added = function comment_added(data) {
   return enfocus.core.at.call(null, "#user-comments", enfocus.core.prepend.call(null, client.core.user_comment.call(null, data)));
@@ -39870,26 +39876,46 @@ client.user_content.error_handler = function error_handler(data) {
   if (cljs.core.truth_(temp__4124__auto__)) {
     var resp = temp__4124__auto__;
     client.core.show_error.call(null, (new cljs.core.Keyword(null, "error-message", "error-message", 2128945332)).cljs$core$IFn$_invoke$arity$1(resp));
-    return client.user_content.favorite_set.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "content-id", "content-id", 1278408289), (new cljs.core.Keyword(null, "content-id", "content-id", 1278408289)).cljs$core$IFn$_invoke$arity$1(resp), new cljs.core.Keyword(null, "favorite", "favorite", 2064694542), cljs.core.not.call(null, (new cljs.core.Keyword(null, "favorite", "favorite", 2064694542)).cljs$core$IFn$_invoke$arity$1(resp))], null));
+    return client.user_content.favorite_set.call(null, new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "content-id", "content-id", 1278408289), (new cljs.core.Keyword(null, "content-id", "content-id", 1278408289)).cljs$core$IFn$_invoke$arity$1(resp), new cljs.core.Keyword(null, "content-type", "content-type", 1799574400), (new cljs.core.Keyword(null, "content-type", "content-type", 1799574400)).cljs$core$IFn$_invoke$arity$1(resp), new cljs.core.Keyword(null, "favorite", "favorite", 
+    2064694542), cljs.core.not.call(null, (new cljs.core.Keyword(null, "favorite", "favorite", 2064694542)).cljs$core$IFn$_invoke$arity$1(resp))], null));
   } else {
     return client.core.error_handler.call(null, data);
   }
 };
-client.user_content.favorite_handler = function favorite_handler(id, favorite) {
-  return enfocus.core.do__GT_.call(null, enfocus.core.set_attr.call(null, new cljs.core.Keyword(null, "id", "id", 1013907597), client.user_content.get_favorite_id.call(null, id)), client.user_content.favorite_class_handler.call(null, id, favorite), enfocus.events.remove_listeners.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330)), enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function() {
-    return client.user_content.try_set_favorite.call(null, id, cljs.core.not.call(null, favorite));
+client.user_content.favorite_handler = function favorite_handler(id, content_type, favorite) {
+  return enfocus.core.do__GT_.call(null, enfocus.core.set_attr.call(null, new cljs.core.Keyword(null, "id", "id", 1013907597), client.user_content.get_favorite_id.call(null, id)), client.user_content.favorite_class_handler.call(null, favorite), enfocus.events.remove_listeners.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330)), enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function() {
+    return client.user_content.try_set_favorite.call(null, id, content_type, cljs.core.not.call(null, favorite), false);
   }));
 };
-client.user_content.try_set_favorite = function try_set_favorite(content_id, favorite) {
-  enfocus.core.at.call(null, client.user_content.get_favorite_id_selector.call(null, content_id), client.user_content.favorite_class_handler.call(null, content_id, favorite));
-  return ajax.core.POST.call(null, "/user_content/set_favorite", new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.user_content.favorite_set, new cljs.core.Keyword(null, "params", "params", 4313443576), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "content-id", "content-id", 1278408289), content_id, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542), favorite], null), new cljs.core.Keyword(null, 
-  "error-handler", "error-handler", 1866823671), client.user_content.error_handler], null));
+client.user_content.favorite_card_handler = function favorite_card_handler(id, content_type, favorite) {
+  return enfocus.core.do__GT_.call(null, client.user_content.favorite_class_handler.call(null, favorite), enfocus.events.remove_listeners.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330)), enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function() {
+    return client.user_content.try_set_favorite.call(null, id, content_type, cljs.core.not.call(null, favorite), true);
+  }));
 };
-goog.exportSymbol("client.user_content.try_set_favorite", client.user_content.try_set_favorite);
+client.user_content.show_login_message = function show_login_message() {
+  return client.core.show_error.call(null, "please log in");
+};
+client.user_content.try_set_favorite = function try_set_favorite(content_id, content_type, favorite, with_card) {
+  if (cljs.core.not.call(null, cljs.core.deref.call(null, client.core.logged_in))) {
+    return client.user_content.show_login_message.call(null);
+  } else {
+    enfocus.core.at.call(null, client.user_content.get_favorite_id_selector.call(null, content_id), client.user_content.favorite_class_handler.call(null, favorite));
+    if (cljs.core.truth_(with_card)) {
+      enfocus.core.at.call(null, "#favorite_card", client.user_content.favorite_class_handler.call(null, favorite));
+    } else {
+    }
+    return ajax.core.POST.call(null, "/user_content/set_favorite", new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), cljs.core.partial.call(null, client.user_content.favorite_set, with_card), new cljs.core.Keyword(null, "params", "params", 4313443576), new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "content-id", "content-id", 1278408289), content_id, new cljs.core.Keyword(null, "content-type", "content-type", 1799574400), 
+    content_type, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542), favorite], null), new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.user_content.error_handler], null));
+  }
+};
 client.user_content.try_add_comment = function try_add_comment(content_id) {
-  ajax.core.POST.call(null, "/user_content/add_comment", new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.user_content.comment_added, new cljs.core.Keyword(null, "params", "params", 4313443576), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "content-id", "content-id", 1278408289), content_id, new cljs.core.Keyword(null, "comment", "comment", 1964302801), enfocus.core.from.call(null, "#user-comment", enfocus.core.read_form_input.call(null))], 
-  null), new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.user_content.error_handler], null));
-  return enfocus.core.at.call(null, "#user-comment", enfocus.core.set_form_input.call(null, ""));
+  if (cljs.core.not.call(null, cljs.core.deref.call(null, client.core.logged_in))) {
+    return client.user_content.show_login_message.call(null);
+  } else {
+    ajax.core.POST.call(null, "/user_content/add_comment", new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.user_content.comment_added, new cljs.core.Keyword(null, "params", "params", 4313443576), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "content-id", "content-id", 1278408289), content_id, new cljs.core.Keyword(null, "comment", "comment", 1964302801), enfocus.core.from.call(null, "#user-comment", enfocus.core.read_form_input.call(null))], 
+    null), new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.user_content.error_handler], null));
+    return enfocus.core.at.call(null, "#user-comment", enfocus.core.set_form_input.call(null, ""));
+  }
 };
 goog.exportSymbol("client.user_content.try_add_comment", client.user_content.try_add_comment);
 goog.provide("goog.history.EventType");
@@ -40947,15 +40973,15 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.site_header = function site_header() {
-  var vec__9652 = function() {
+  var vec__13152 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", ".site-header");
   }.call(null);
-  var id_sym9649 = cljs.core.nth.call(null, vec__9652, 0, null);
-  var pnod9650 = cljs.core.nth.call(null, vec__9652, 1, null);
-  var pnod9650__$1 = enfocus.core.create_hidden_dom.call(null, pnod9650);
-  enfocus.core.i_at.call(null, id_sym9649, pnod9650__$1);
-  enfocus.core.reset_ids.call(null, id_sym9649, pnod9650__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9650__$1);
+  var id_sym13149 = cljs.core.nth.call(null, vec__13152, 0, null);
+  var pnod13150 = cljs.core.nth.call(null, vec__13152, 1, null);
+  var pnod13150__$1 = enfocus.core.create_hidden_dom.call(null, pnod13150);
+  enfocus.core.i_at.call(null, id_sym13149, pnod13150__$1);
+  enfocus.core.reset_ids.call(null, id_sym13149, pnod13150__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13150__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -40963,15 +40989,15 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.login_header = function login_header() {
-  var vec__9656 = function() {
+  var vec__13156 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#login-header");
   }.call(null);
-  var id_sym9653 = cljs.core.nth.call(null, vec__9656, 0, null);
-  var pnod9654 = cljs.core.nth.call(null, vec__9656, 1, null);
-  var pnod9654__$1 = enfocus.core.create_hidden_dom.call(null, pnod9654);
-  enfocus.core.i_at.call(null, id_sym9653, pnod9654__$1);
-  enfocus.core.reset_ids.call(null, id_sym9653, pnod9654__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9654__$1);
+  var id_sym13153 = cljs.core.nth.call(null, vec__13156, 0, null);
+  var pnod13154 = cljs.core.nth.call(null, vec__13156, 1, null);
+  var pnod13154__$1 = enfocus.core.create_hidden_dom.call(null, pnod13154);
+  enfocus.core.i_at.call(null, id_sym13153, pnod13154__$1);
+  enfocus.core.reset_ids.call(null, id_sym13153, pnod13154__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13154__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -40979,15 +41005,15 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.login_refs = function login_refs() {
-  var vec__9660 = function() {
+  var vec__13160 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#login-refs");
   }.call(null);
-  var id_sym9657 = cljs.core.nth.call(null, vec__9660, 0, null);
-  var pnod9658 = cljs.core.nth.call(null, vec__9660, 1, null);
-  var pnod9658__$1 = enfocus.core.create_hidden_dom.call(null, pnod9658);
-  enfocus.core.i_at.call(null, id_sym9657, pnod9658__$1);
-  enfocus.core.reset_ids.call(null, id_sym9657, pnod9658__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9658__$1);
+  var id_sym13157 = cljs.core.nth.call(null, vec__13160, 0, null);
+  var pnod13158 = cljs.core.nth.call(null, vec__13160, 1, null);
+  var pnod13158__$1 = enfocus.core.create_hidden_dom.call(null, pnod13158);
+  enfocus.core.i_at.call(null, id_sym13157, pnod13158__$1);
+  enfocus.core.reset_ids.call(null, id_sym13157, pnod13158__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13158__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -40995,15 +41021,15 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.logout_refs = function logout_refs() {
-  var vec__9664 = function() {
+  var vec__13164 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#logout-refs");
   }.call(null);
-  var id_sym9661 = cljs.core.nth.call(null, vec__9664, 0, null);
-  var pnod9662 = cljs.core.nth.call(null, vec__9664, 1, null);
-  var pnod9662__$1 = enfocus.core.create_hidden_dom.call(null, pnod9662);
-  enfocus.core.i_at.call(null, id_sym9661, pnod9662__$1);
-  enfocus.core.reset_ids.call(null, id_sym9661, pnod9662__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9662__$1);
+  var id_sym13161 = cljs.core.nth.call(null, vec__13164, 0, null);
+  var pnod13162 = cljs.core.nth.call(null, vec__13164, 1, null);
+  var pnod13162__$1 = enfocus.core.create_hidden_dom.call(null, pnod13162);
+  enfocus.core.i_at.call(null, id_sym13161, pnod13162__$1);
+  enfocus.core.reset_ids.call(null, id_sym13161, pnod13162__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13162__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -41011,15 +41037,31 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.site_content = function site_content() {
-  var vec__9668 = function() {
+  var vec__13168 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#content");
   }.call(null);
-  var id_sym9665 = cljs.core.nth.call(null, vec__9668, 0, null);
-  var pnod9666 = cljs.core.nth.call(null, vec__9668, 1, null);
-  var pnod9666__$1 = enfocus.core.create_hidden_dom.call(null, pnod9666);
-  enfocus.core.i_at.call(null, id_sym9665, pnod9666__$1);
-  enfocus.core.reset_ids.call(null, id_sym9665, pnod9666__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9666__$1);
+  var id_sym13165 = cljs.core.nth.call(null, vec__13168, 0, null);
+  var pnod13166 = cljs.core.nth.call(null, vec__13168, 1, null);
+  var pnod13166__$1 = enfocus.core.create_hidden_dom.call(null, pnod13166);
+  enfocus.core.i_at.call(null, id_sym13165, pnod13166__$1);
+  enfocus.core.reset_ids.call(null, id_sym13165, pnod13166__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13166__$1);
+};
+enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
+if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
+  cljs.core.swap_BANG_.call(null, enfocus.core.tpl_cache, cljs.core.assoc, "remotesite-template", new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, ["", "NOT_LOADED"], null));
+} else {
+}
+client.core.not_logged_in = function not_logged_in() {
+  var vec__13172 = function() {
+    return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#not-logged-in");
+  }.call(null);
+  var id_sym13169 = cljs.core.nth.call(null, vec__13172, 0, null);
+  var pnod13170 = cljs.core.nth.call(null, vec__13172, 1, null);
+  var pnod13170__$1 = enfocus.core.create_hidden_dom.call(null, pnod13170);
+  enfocus.core.i_at.call(null, id_sym13169, pnod13170__$1);
+  enfocus.core.reset_ids.call(null, id_sym13169, pnod13170__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13170__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -41027,15 +41069,15 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.pager = function pager(page_num, total_pages) {
-  var vec__9672 = function() {
+  var vec__13176 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#pager");
   }.call(null);
-  var id_sym9669 = cljs.core.nth.call(null, vec__9672, 0, null);
-  var pnod9670 = cljs.core.nth.call(null, vec__9672, 1, null);
-  var pnod9670__$1 = enfocus.core.create_hidden_dom.call(null, pnod9670);
-  enfocus.core.i_at.call(null, id_sym9669, pnod9670__$1, "#current_page", enfocus.core.content.call(null, [cljs.core.str(page_num)].join("")), "#total_pages", enfocus.core.content.call(null, [cljs.core.str(total_pages)].join("")));
-  enfocus.core.reset_ids.call(null, id_sym9669, pnod9670__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9670__$1);
+  var id_sym13173 = cljs.core.nth.call(null, vec__13176, 0, null);
+  var pnod13174 = cljs.core.nth.call(null, vec__13176, 1, null);
+  var pnod13174__$1 = enfocus.core.create_hidden_dom.call(null, pnod13174);
+  enfocus.core.i_at.call(null, id_sym13173, pnod13174__$1, "#current_page", enfocus.core.content.call(null, [cljs.core.str(page_num)].join("")), "#total_pages", enfocus.core.content.call(null, [cljs.core.str(total_pages)].join("")));
+  enfocus.core.reset_ids.call(null, id_sym13173, pnod13174__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13174__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -41043,15 +41085,31 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.card_closer = function card_closer() {
-  var vec__9676 = function() {
+  var vec__13180 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#card-closer");
   }.call(null);
-  var id_sym9673 = cljs.core.nth.call(null, vec__9676, 0, null);
-  var pnod9674 = cljs.core.nth.call(null, vec__9676, 1, null);
-  var pnod9674__$1 = enfocus.core.create_hidden_dom.call(null, pnod9674);
-  enfocus.core.i_at.call(null, id_sym9673, pnod9674__$1);
-  enfocus.core.reset_ids.call(null, id_sym9673, pnod9674__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9674__$1);
+  var id_sym13177 = cljs.core.nth.call(null, vec__13180, 0, null);
+  var pnod13178 = cljs.core.nth.call(null, vec__13180, 1, null);
+  var pnod13178__$1 = enfocus.core.create_hidden_dom.call(null, pnod13178);
+  enfocus.core.i_at.call(null, id_sym13177, pnod13178__$1);
+  enfocus.core.reset_ids.call(null, id_sym13177, pnod13178__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13178__$1);
+};
+enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
+if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
+  cljs.core.swap_BANG_.call(null, enfocus.core.tpl_cache, cljs.core.assoc, "remotesite-template", new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, ["", "NOT_LOADED"], null));
+} else {
+}
+client.core.card_spacer = function card_spacer() {
+  var vec__13184 = function() {
+    return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#card-spacer");
+  }.call(null);
+  var id_sym13181 = cljs.core.nth.call(null, vec__13184, 0, null);
+  var pnod13182 = cljs.core.nth.call(null, vec__13184, 1, null);
+  var pnod13182__$1 = enfocus.core.create_hidden_dom.call(null, pnod13182);
+  enfocus.core.i_at.call(null, id_sym13181, pnod13182__$1);
+  enfocus.core.reset_ids.call(null, id_sym13181, pnod13182__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13182__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -41059,41 +41117,41 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.card = function card() {
-  var vec__9680 = function() {
+  var vec__13188 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#card");
   }.call(null);
-  var id_sym9677 = cljs.core.nth.call(null, vec__9680, 0, null);
-  var pnod9678 = cljs.core.nth.call(null, vec__9680, 1, null);
-  var pnod9678__$1 = enfocus.core.create_hidden_dom.call(null, pnod9678);
-  enfocus.core.i_at.call(null, id_sym9677, pnod9678__$1);
-  enfocus.core.reset_ids.call(null, id_sym9677, pnod9678__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9678__$1);
+  var id_sym13185 = cljs.core.nth.call(null, vec__13188, 0, null);
+  var pnod13186 = cljs.core.nth.call(null, vec__13188, 1, null);
+  var pnod13186__$1 = enfocus.core.create_hidden_dom.call(null, pnod13186);
+  enfocus.core.i_at.call(null, id_sym13185, pnod13186__$1);
+  enfocus.core.reset_ids.call(null, id_sym13185, pnod13186__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13186__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
   cljs.core.swap_BANG_.call(null, enfocus.core.tpl_cache, cljs.core.assoc, "remotesite-template", new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, ["", "NOT_LOADED"], null));
 } else {
 }
-client.core.movie_item = function movie_item(p__9683) {
-  var map__9686 = p__9683;
-  var map__9686__$1 = cljs.core.seq_QMARK_.call(null, map__9686) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9686) : map__9686;
-  var type = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "type", "type", 1017479852));
-  var favorite = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
-  var poster_path = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "poster_path", "poster_path", 2682805065));
-  var first_air_date = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "first_air_date", "first_air_date", 3955344804));
-  var release_date = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "release_date", "release_date", 3343016024));
-  var name = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "name", "name", 1017277949));
-  var title = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "title", "title", 1124275658));
-  var id = cljs.core.get.call(null, map__9686__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
-  var vec__9687 = function(map__9686, map__9686__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id) {
+client.core.movie_item = function movie_item(p__13191) {
+  var map__13194 = p__13191;
+  var map__13194__$1 = cljs.core.seq_QMARK_.call(null, map__13194) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13194) : map__13194;
+  var type = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "type", "type", 1017479852));
+  var favorite = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
+  var poster_path = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "poster_path", "poster_path", 2682805065));
+  var first_air_date = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "first_air_date", "first_air_date", 3955344804));
+  var release_date = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "release_date", "release_date", 3343016024));
+  var name = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "name", "name", 1017277949));
+  var title = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "title", "title", 1124275658));
+  var id = cljs.core.get.call(null, map__13194__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
+  var vec__13195 = function(map__13194, map__13194__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id) {
     return function() {
       return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#movie-item");
     };
-  }(map__9686, map__9686__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id).call(null);
-  var id_sym9681 = cljs.core.nth.call(null, vec__9687, 0, null);
-  var pnod9682 = cljs.core.nth.call(null, vec__9687, 1, null);
-  var pnod9682__$1 = enfocus.core.create_hidden_dom.call(null, pnod9682);
-  enfocus.core.i_at.call(null, id_sym9681, pnod9682__$1, "#item-title", enfocus.core.content.call(null, function() {
+  }(map__13194, map__13194__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id).call(null);
+  var id_sym13189 = cljs.core.nth.call(null, vec__13195, 0, null);
+  var pnod13190 = cljs.core.nth.call(null, vec__13195, 1, null);
+  var pnod13190__$1 = enfocus.core.create_hidden_dom.call(null, pnod13190);
+  enfocus.core.i_at.call(null, id_sym13189, pnod13190__$1, "#item-title", enfocus.core.content.call(null, function() {
     var or__3481__auto__ = title;
     if (cljs.core.truth_(or__3481__auto__)) {
       return or__3481__auto__;
@@ -41107,42 +41165,43 @@ client.core.movie_item = function movie_item(p__9683) {
     } else {
       return first_air_date;
     }
-  }())), "#item-cover", client.core.set_poster_source.call(null, poster_path, client.core.get_poster_size.call(null, cljs.core.second)), "#favorite", client.user_content.favorite_handler.call(null, id, favorite), "#card-ref", enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function(vec__9687, id_sym9681, pnod9682, pnod9682__$1, map__9686, map__9686__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id) {
+  }())), "#item-cover", client.core.set_poster_source.call(null, poster_path, client.core.get_poster_size.call(null, cljs.core.second)), "#favorite", client.user_content.favorite_handler.call(null, id, type, favorite), "#card-ref", enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function(vec__13195, id_sym13189, pnod13190, pnod13190__$1, map__13194, map__13194__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id) {
     return function() {
       return client.core.load_content_card.call(null, id, type);
     };
-  }(vec__9687, id_sym9681, pnod9682, pnod9682__$1, map__9686, map__9686__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id)));
-  enfocus.core.reset_ids.call(null, id_sym9681, pnod9682__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9682__$1);
+  }(vec__13195, id_sym13189, pnod13190, pnod13190__$1, map__13194, map__13194__$1, type, favorite, poster_path, first_air_date, release_date, name, title, id)));
+  enfocus.core.reset_ids.call(null, id_sym13189, pnod13190__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13190__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
   cljs.core.swap_BANG_.call(null, enfocus.core.tpl_cache, cljs.core.assoc, "remotesite-template", new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, ["", "NOT_LOADED"], null));
 } else {
 }
-client.core.first_movie_item = function first_movie_item(p__9690) {
-  var map__9693 = p__9690;
-  var map__9693__$1 = cljs.core.seq_QMARK_.call(null, map__9693) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9693) : map__9693;
-  var favorite = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
-  var poster_path = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "poster_path", "poster_path", 2682805065));
-  var release_date = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "release_date", "release_date", 3343016024));
-  var homepage = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "homepage", "homepage", 528532320));
-  var genres = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "genres", "genres", 4059372226));
-  var name = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "name", "name", 1017277949));
-  var type = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "type", "type", 1017479852));
-  var overview = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "overview", "overview", 1544020203));
-  var title = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "title", "title", 1124275658));
-  var id = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
-  var first_air_date = cljs.core.get.call(null, map__9693__$1, new cljs.core.Keyword(null, "first_air_date", "first_air_date", 3955344804));
-  var vec__9694 = function(map__9693, map__9693__$1, favorite, poster_path, release_date, homepage, genres, name, type, overview, title, id, first_air_date) {
+client.core.first_movie_item = function first_movie_item(p__13198) {
+  var map__13201 = p__13198;
+  var map__13201__$1 = cljs.core.seq_QMARK_.call(null, map__13201) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13201) : map__13201;
+  var favorite = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
+  var poster_path = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "poster_path", "poster_path", 2682805065));
+  var release_date = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "release_date", "release_date", 3343016024));
+  var homepage = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "homepage", "homepage", 528532320));
+  var last_air_date = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "last_air_date", "last_air_date", 908101758));
+  var genres = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "genres", "genres", 4059372226));
+  var name = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "name", "name", 1017277949));
+  var type = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "type", "type", 1017479852));
+  var overview = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "overview", "overview", 1544020203));
+  var title = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "title", "title", 1124275658));
+  var id = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
+  var first_air_date = cljs.core.get.call(null, map__13201__$1, new cljs.core.Keyword(null, "first_air_date", "first_air_date", 3955344804));
+  var vec__13202 = function(map__13201, map__13201__$1, favorite, poster_path, release_date, homepage, last_air_date, genres, name, type, overview, title, id, first_air_date) {
     return function() {
       return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#first-movie-item");
     };
-  }(map__9693, map__9693__$1, favorite, poster_path, release_date, homepage, genres, name, type, overview, title, id, first_air_date).call(null);
-  var id_sym9688 = cljs.core.nth.call(null, vec__9694, 0, null);
-  var pnod9689 = cljs.core.nth.call(null, vec__9694, 1, null);
-  var pnod9689__$1 = enfocus.core.create_hidden_dom.call(null, pnod9689);
-  enfocus.core.i_at.call(null, id_sym9688, pnod9689__$1, "#item-title", enfocus.core.content.call(null, function() {
+  }(map__13201, map__13201__$1, favorite, poster_path, release_date, homepage, last_air_date, genres, name, type, overview, title, id, first_air_date).call(null);
+  var id_sym13196 = cljs.core.nth.call(null, vec__13202, 0, null);
+  var pnod13197 = cljs.core.nth.call(null, vec__13202, 1, null);
+  var pnod13197__$1 = enfocus.core.create_hidden_dom.call(null, pnod13197);
+  enfocus.core.i_at.call(null, id_sym13196, pnod13197__$1, "#item-title", enfocus.core.content.call(null, function() {
     var or__3481__auto__ = title;
     if (cljs.core.truth_(or__3481__auto__)) {
       return or__3481__auto__;
@@ -41156,42 +41215,50 @@ client.core.first_movie_item = function first_movie_item(p__9690) {
     } else {
       return first_air_date;
     }
-  }())), "#item-overview", enfocus.core.content.call(null, overview), "#item-cover", client.core.set_poster_source.call(null, poster_path, client.core.get_poster_size.call(null, cljs.core.second)), "#item-genres", enfocus.core.content.call(null, clojure.string.join.call(null, ", ", cljs.core.map.call(null, new cljs.core.Keyword(null, "name", "name", 1017277949), genres))), "#item-url", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, homepage), enfocus.core.set_attr.call(null, new cljs.core.Keyword(null, 
-  "href", "href", 1017115293), homepage)), "#favorite", client.user_content.favorite_handler.call(null, id, favorite), "#card-ref", enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function(vec__9694, id_sym9688, pnod9689, pnod9689__$1, map__9693, map__9693__$1, favorite, poster_path, release_date, homepage, genres, name, type, overview, title, id, first_air_date) {
+  }())), "#release-date-title", enfocus.core.content.call(null, cljs.core._EQ_.call(null, type, new cljs.core.Keyword(null, "movie", "movie", 1117991586)) ? "release date:" : "last air date:"), "#release-date", enfocus.core.content.call(null, [cljs.core.str(function() {
+    var or__3481__auto__ = release_date;
+    if (cljs.core.truth_(or__3481__auto__)) {
+      return or__3481__auto__;
+    } else {
+      return last_air_date;
+    }
+  }())].join("")), "#item-overview", enfocus.core.content.call(null, overview), "#item-cover", client.core.set_poster_source.call(null, poster_path, client.core.get_poster_size.call(null, cljs.core.second)), "#item-genres", enfocus.core.content.call(null, clojure.string.join.call(null, ", ", cljs.core.map.call(null, new cljs.core.Keyword(null, "name", "name", 1017277949), genres))), "#item-url", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, homepage), enfocus.core.set_attr.call(null, 
+  new cljs.core.Keyword(null, "href", "href", 1017115293), homepage)), "#favorite", client.user_content.favorite_handler.call(null, id, type, favorite), "#card-ref", enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function(vec__13202, id_sym13196, pnod13197, pnod13197__$1, map__13201, map__13201__$1, favorite, poster_path, release_date, homepage, last_air_date, genres, name, type, overview, title, id, first_air_date) {
     return function() {
       return client.core.load_content_card.call(null, id, type);
     };
-  }(vec__9694, id_sym9688, pnod9689, pnod9689__$1, map__9693, map__9693__$1, favorite, poster_path, release_date, homepage, genres, name, type, overview, title, id, first_air_date)));
-  enfocus.core.reset_ids.call(null, id_sym9688, pnod9689__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9689__$1);
+  }(vec__13202, id_sym13196, pnod13197, pnod13197__$1, map__13201, map__13201__$1, favorite, poster_path, release_date, homepage, last_air_date, genres, name, type, overview, title, id, first_air_date)));
+  enfocus.core.reset_ids.call(null, id_sym13196, pnod13197__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13197__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
   cljs.core.swap_BANG_.call(null, enfocus.core.tpl_cache, cljs.core.assoc, "remotesite-template", new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, ["", "NOT_LOADED"], null));
 } else {
 }
-client.core.movie_card = function movie_card(p__9697) {
-  var map__9700 = p__9697;
-  var map__9700__$1 = cljs.core.seq_QMARK_.call(null, map__9700) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9700) : map__9700;
-  var favorite = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
-  var poster_path = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "poster_path", "poster_path", 2682805065));
-  var release_date = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "release_date", "release_date", 3343016024));
-  var homepage = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "homepage", "homepage", 528532320));
-  var genres = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "genres", "genres", 4059372226));
-  var name = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "name", "name", 1017277949));
-  var overview = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "overview", "overview", 1544020203));
-  var title = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "title", "title", 1124275658));
-  var id = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
-  var first_air_date = cljs.core.get.call(null, map__9700__$1, new cljs.core.Keyword(null, "first_air_date", "first_air_date", 3955344804));
-  var vec__9701 = function(map__9700, map__9700__$1, favorite, poster_path, release_date, homepage, genres, name, overview, title, id, first_air_date) {
+client.core.movie_card = function movie_card(p__13205, content_type) {
+  var map__13208 = p__13205;
+  var map__13208__$1 = cljs.core.seq_QMARK_.call(null, map__13208) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13208) : map__13208;
+  var favorite = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "favorite", "favorite", 2064694542));
+  var poster_path = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "poster_path", "poster_path", 2682805065));
+  var release_date = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "release_date", "release_date", 3343016024));
+  var homepage = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "homepage", "homepage", 528532320));
+  var last_air_date = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "last_air_date", "last_air_date", 908101758));
+  var genres = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "genres", "genres", 4059372226));
+  var name = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "name", "name", 1017277949));
+  var overview = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "overview", "overview", 1544020203));
+  var title = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "title", "title", 1124275658));
+  var id = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "id", "id", 1013907597));
+  var first_air_date = cljs.core.get.call(null, map__13208__$1, new cljs.core.Keyword(null, "first_air_date", "first_air_date", 3955344804));
+  var vec__13209 = function(map__13208, map__13208__$1, favorite, poster_path, release_date, homepage, last_air_date, genres, name, overview, title, id, first_air_date) {
     return function() {
       return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#movie-card");
     };
-  }(map__9700, map__9700__$1, favorite, poster_path, release_date, homepage, genres, name, overview, title, id, first_air_date).call(null);
-  var id_sym9695 = cljs.core.nth.call(null, vec__9701, 0, null);
-  var pnod9696 = cljs.core.nth.call(null, vec__9701, 1, null);
-  var pnod9696__$1 = enfocus.core.create_hidden_dom.call(null, pnod9696);
-  enfocus.core.i_at.call(null, id_sym9695, pnod9696__$1, "#item-title", enfocus.core.content.call(null, function() {
+  }(map__13208, map__13208__$1, favorite, poster_path, release_date, homepage, last_air_date, genres, name, overview, title, id, first_air_date).call(null);
+  var id_sym13203 = cljs.core.nth.call(null, vec__13209, 0, null);
+  var pnod13204 = cljs.core.nth.call(null, vec__13209, 1, null);
+  var pnod13204__$1 = enfocus.core.create_hidden_dom.call(null, pnod13204);
+  enfocus.core.i_at.call(null, id_sym13203, pnod13204__$1, "#item-title", enfocus.core.content.call(null, function() {
     var or__3481__auto__ = title;
     if (cljs.core.truth_(or__3481__auto__)) {
       return or__3481__auto__;
@@ -41205,10 +41272,17 @@ client.core.movie_card = function movie_card(p__9697) {
     } else {
       return first_air_date;
     }
-  }())), "#item-overview", enfocus.core.content.call(null, overview), "#item-cover", client.core.set_poster_source.call(null, poster_path, client.core.get_poster_size.call(null, cljs.core.second)), "#item-genres", enfocus.core.content.call(null, clojure.string.join.call(null, ", ", cljs.core.map.call(null, new cljs.core.Keyword(null, "name", "name", 1017277949), genres))), "#item-url", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, homepage), enfocus.core.set_attr.call(null, new cljs.core.Keyword(null, 
-  "href", "href", 1017115293), homepage)), "#favorite", client.user_content.favorite_handler.call(null, id, favorite));
-  enfocus.core.reset_ids.call(null, id_sym9695, pnod9696__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9696__$1);
+  }())), "#release-date-title", enfocus.core.content.call(null, cljs.core._EQ_.call(null, content_type, new cljs.core.Keyword(null, "movie", "movie", 1117991586)) ? "release date:" : "last air date:"), "#release-date", enfocus.core.content.call(null, [cljs.core.str(function() {
+    var or__3481__auto__ = release_date;
+    if (cljs.core.truth_(or__3481__auto__)) {
+      return or__3481__auto__;
+    } else {
+      return last_air_date;
+    }
+  }())].join("")), "#item-overview", enfocus.core.content.call(null, overview), "#item-cover", client.core.set_poster_source.call(null, poster_path, client.core.get_poster_size.call(null, cljs.core.second)), "#item-genres", enfocus.core.content.call(null, clojure.string.join.call(null, ", ", cljs.core.map.call(null, new cljs.core.Keyword(null, "name", "name", 1017277949), genres))), "#item-url", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, homepage), enfocus.core.set_attr.call(null, 
+  new cljs.core.Keyword(null, "href", "href", 1017115293), homepage)), "#favorite_card", client.user_content.favorite_card_handler.call(null, id, content_type, favorite));
+  enfocus.core.reset_ids.call(null, id_sym13203, pnod13204__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13204__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
@@ -41216,40 +41290,41 @@ if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-te
 } else {
 }
 client.core.movie_row = function movie_row(inner_tpl, data) {
-  var vec__9705 = function() {
+  var vec__13213 = function() {
     return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#movie-row");
   }.call(null);
-  var id_sym9702 = cljs.core.nth.call(null, vec__9705, 0, null);
-  var pnod9703 = cljs.core.nth.call(null, vec__9705, 1, null);
-  var pnod9703__$1 = enfocus.core.create_hidden_dom.call(null, pnod9703);
-  enfocus.core.i_at.call(null, id_sym9702, pnod9703__$1, "#movie-row", enfocus.core.content.call(null, cljs.core.map.call(null, inner_tpl, data)));
-  enfocus.core.reset_ids.call(null, id_sym9702, pnod9703__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9703__$1);
+  var id_sym13210 = cljs.core.nth.call(null, vec__13213, 0, null);
+  var pnod13211 = cljs.core.nth.call(null, vec__13213, 1, null);
+  var pnod13211__$1 = enfocus.core.create_hidden_dom.call(null, pnod13211);
+  enfocus.core.i_at.call(null, id_sym13210, pnod13211__$1, "#movie-row", enfocus.core.content.call(null, cljs.core.map.call(null, inner_tpl, data)));
+  enfocus.core.reset_ids.call(null, id_sym13210, pnod13211__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13211__$1);
 };
 enfocus.core.load_remote_dom.call(null, client.core.site_template, "remotesite-template", "en5670_");
 if (cljs.core.deref.call(null, enfocus.core.tpl_cache).call(null, "remotesite-template") == null) {
   cljs.core.swap_BANG_.call(null, enfocus.core.tpl_cache, cljs.core.assoc, "remotesite-template", new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, ["", "NOT_LOADED"], null));
 } else {
 }
-client.core.user_comment = function user_comment(p__9708) {
-  var map__9711 = p__9708;
-  var map__9711__$1 = cljs.core.seq_QMARK_.call(null, map__9711) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9711) : map__9711;
-  var user_name = cljs.core.get.call(null, map__9711__$1, new cljs.core.Keyword(null, "user-name", "user-name", 1307069119));
-  var created = cljs.core.get.call(null, map__9711__$1, new cljs.core.Keyword(null, "created", "created", 2042458714));
-  var comment = cljs.core.get.call(null, map__9711__$1, new cljs.core.Keyword(null, "comment", "comment", 1964302801));
-  var vec__9712 = function(map__9711, map__9711__$1, user_name, created, comment) {
+client.core.user_comment = function user_comment(p__13216) {
+  var map__13219 = p__13216;
+  var map__13219__$1 = cljs.core.seq_QMARK_.call(null, map__13219) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13219) : map__13219;
+  var user_name = cljs.core.get.call(null, map__13219__$1, new cljs.core.Keyword(null, "user-name", "user-name", 1307069119));
+  var created = cljs.core.get.call(null, map__13219__$1, new cljs.core.Keyword(null, "created", "created", 2042458714));
+  var comment = cljs.core.get.call(null, map__13219__$1, new cljs.core.Keyword(null, "comment", "comment", 1964302801));
+  var vec__13220 = function(map__13219, map__13219__$1, user_name, created, comment) {
     return function() {
       return enfocus.core.get_cached_snippet.call(null, "remotesite-template", "#comment");
     };
-  }(map__9711, map__9711__$1, user_name, created, comment).call(null);
-  var id_sym9706 = cljs.core.nth.call(null, vec__9712, 0, null);
-  var pnod9707 = cljs.core.nth.call(null, vec__9712, 1, null);
-  var pnod9707__$1 = enfocus.core.create_hidden_dom.call(null, pnod9707);
-  enfocus.core.i_at.call(null, id_sym9706, pnod9707__$1, "#comment-date", enfocus.core.content.call(null, [cljs.core.str(created.toLocaleDateString()), cljs.core.str(" "), cljs.core.str(created.toLocaleTimeString())].join("")), "#comment-user-name", enfocus.core.content.call(null, user_name), "#comment-text", enfocus.core.content.call(null, comment));
-  enfocus.core.reset_ids.call(null, id_sym9706, pnod9707__$1);
-  return enfocus.core.remove_node_return_child.call(null, pnod9707__$1);
+  }(map__13219, map__13219__$1, user_name, created, comment).call(null);
+  var id_sym13214 = cljs.core.nth.call(null, vec__13220, 0, null);
+  var pnod13215 = cljs.core.nth.call(null, vec__13220, 1, null);
+  var pnod13215__$1 = enfocus.core.create_hidden_dom.call(null, pnod13215);
+  enfocus.core.i_at.call(null, id_sym13214, pnod13215__$1, "#comment-date", enfocus.core.content.call(null, [cljs.core.str(created.toLocaleDateString()), cljs.core.str(" "), cljs.core.str(created.toLocaleTimeString())].join("")), "#comment-user-name", enfocus.core.content.call(null, user_name), "#comment-text", enfocus.core.content.call(null, comment));
+  enfocus.core.reset_ids.call(null, id_sym13214, pnod13215__$1);
+  return enfocus.core.remove_node_return_child.call(null, pnod13215__$1);
 };
 client.core.config = cljs.core.atom.call(null, cljs.core.PersistentArrayMap.EMPTY);
+client.core.logged_in = cljs.core.atom.call(null, false);
 client.core.set_config = function set_config(data) {
   return cljs.core.swap_BANG_.call(null, client.core.config, cljs.core.merge, data);
 };
@@ -41289,8 +41364,8 @@ client.core.popular_content_list = function popular_content_list(data, load_hand
   var first_movie = cljs.core.first.call(null, res);
   var next_movies = cljs.core.partition.call(null, 3, cljs.core.next.call(null, res));
   enfocus.core.at.call(null, "#inner-content", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, client.core.movie_row.call(null, client.core.first_movie_item, cljs.core._conj.call(null, cljs.core.List.EMPTY, first_movie))), enfocus.core.append.call(null, client.core.pager.call(null, page, total_pages)), enfocus.core.append.call(null, cljs.core.map.call(null, function(page, total_pages, res, first_movie, next_movies) {
-    return function(p1__9713_SHARP_) {
-      return client.core.movie_row.call(null, client.core.movie_item, p1__9713_SHARP_);
+    return function(p1__13221_SHARP_) {
+      return client.core.movie_row.call(null, client.core.movie_item, p1__13221_SHARP_);
     };
   }(page, total_pages, res, first_movie, next_movies), next_movies)), enfocus.core.append.call(null, client.core.card_closer.call(null))));
   return client.core.set_pager.call(null, page, total_pages, load_handler);
@@ -41300,6 +41375,17 @@ client.core.popular_movie_list = function popular_movie_list(data) {
 };
 client.core.popular_series_list = function popular_series_list(data) {
   return client.core.popular_content_list.call(null, data, client.core.try_load_popular_series);
+};
+client.core.favorites_list = function favorites_list(data) {
+  var page = (new cljs.core.Keyword(null, "page", "page", 1017337345)).cljs$core$IFn$_invoke$arity$1(data);
+  var total_pages = (new cljs.core.Keyword(null, "total_pages", "total_pages", 617717371)).cljs$core$IFn$_invoke$arity$1(data);
+  var res = (new cljs.core.Keyword(null, "results", "results", 2111450984)).cljs$core$IFn$_invoke$arity$1(data);
+  enfocus.core.at.call(null, "#inner-content", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, client.core.pager.call(null, page, total_pages)), enfocus.core.append.call(null, cljs.core.map.call(null, function(page, total_pages, res) {
+    return function(p1__13222_SHARP_) {
+      return client.core.movie_row.call(null, client.core.first_movie_item, cljs.core._conj.call(null, cljs.core.List.EMPTY, p1__13222_SHARP_));
+    };
+  }(page, total_pages, res), res)), enfocus.core.append.call(null, client.core.card_closer.call(null))));
+  return client.core.set_pager.call(null, page, total_pages, client.core.try_load_favorites);
 };
 client.core.show_error = function show_error(status_text) {
   enfocus.core.at.call(null, "#error-message", enfocus.core.content.call(null, status_text));
@@ -41315,12 +41401,13 @@ client.core.hide_card = function hide_card() {
 };
 goog.exportSymbol("client.core.hide_card", client.core.hide_card);
 client.core.load_content_card = function load_content_card(id, type) {
-  return ajax.core.GET.call(null, [cljs.core.str("/"), cljs.core.str(cljs.core._EQ_.call(null, type, new cljs.core.Keyword(null, "movie", "movie", 1117991586)) ? "movies" : "series"), cljs.core.str("/"), cljs.core.str(id)].join(""), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.core.show_content_card, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
+  return ajax.core.GET.call(null, [cljs.core.str("/"), cljs.core.str(cljs.core._EQ_.call(null, type, new cljs.core.Keyword(null, "movie", "movie", 1117991586)) ? "movies" : "series"), cljs.core.str("/"), cljs.core.str(id)].join(""), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), cljs.core.partial.call(null, client.core.show_content_card, type), new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], 
+  null));
 };
-client.core.show_content_card = function show_content_card(data) {
+client.core.show_content_card = function show_content_card(content_type, data) {
   var id = (new cljs.core.Keyword(null, "id", "id", 1013907597)).cljs$core$IFn$_invoke$arity$1(data);
   enfocus.core.at.call(null, "#card-closer", enfocus.core.set_style.call(null, new cljs.core.Keyword(null, "display", "display", 2685668404), "block"));
-  enfocus.core.at.call(null, "#card", enfocus.core.do__GT_.call(null, enfocus.core.set_style.call(null, new cljs.core.Keyword(null, "display", "display", 2685668404), "block"), enfocus.core.content.call(null, client.core.movie_card.call(null, data))));
+  enfocus.core.at.call(null, "#card", enfocus.core.do__GT_.call(null, enfocus.core.set_style.call(null, new cljs.core.Keyword(null, "display", "display", 2685668404), "block"), enfocus.core.content.call(null, client.core.movie_card.call(null, data, content_type))));
   enfocus.core.at.call(null, "#add-comment", enfocus.core.do__GT_.call(null, enfocus.events.remove_listeners.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330)), enfocus.events.listen.call(null, new cljs.core.Keyword(null, "click", "click", 1108654330), function(id) {
     return function() {
       return client.user_content.try_add_comment.call(null, id);
@@ -41334,11 +41421,11 @@ client.core.show_card_comments = function show_card_comments(data) {
 client.core.load_card_comments = function load_card_comments(id) {
   return ajax.core.GET.call(null, [cljs.core.str("/user_content/"), cljs.core.str(id), cljs.core.str("/comments")].join(""), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.core.show_card_comments, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
 };
-client.core.error_handler = function error_handler(p__9714) {
-  var map__9716 = p__9714;
-  var map__9716__$1 = cljs.core.seq_QMARK_.call(null, map__9716) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9716) : map__9716;
-  var status_text = cljs.core.get.call(null, map__9716__$1, new cljs.core.Keyword(null, "status-text", "status-text", 4371493274));
-  var status = cljs.core.get.call(null, map__9716__$1, new cljs.core.Keyword(null, "status", "status", 4416389988));
+client.core.error_handler = function error_handler(p__13223) {
+  var map__13225 = p__13223;
+  var map__13225__$1 = cljs.core.seq_QMARK_.call(null, map__13225) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13225) : map__13225;
+  var status_text = cljs.core.get.call(null, map__13225__$1, new cljs.core.Keyword(null, "status-text", "status-text", 4371493274));
+  var status = cljs.core.get.call(null, map__13225__$1, new cljs.core.Keyword(null, "status", "status", 4416389988));
   return client.core.show_error.call(null, status_text);
 };
 client.core.try_load_popular_movies = function try_load_popular_movies(page) {
@@ -41347,160 +41434,220 @@ client.core.try_load_popular_movies = function try_load_popular_movies(page) {
 client.core.try_load_popular_series = function try_load_popular_series(page) {
   return ajax.core.GET.call(null, [cljs.core.str("/series/popular?page\x3d"), cljs.core.str(page)].join(""), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.core.popular_series_list, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
 };
-client.core.populate_login_header = function populate_login_header(data) {
-  if (cljs.core.truth_(data)) {
-    return client.login.user_logged_in.call(null, data);
+client.core.try_load_favorites = function try_load_favorites(page) {
+  if (cljs.core.truth_(cljs.core.deref.call(null, client.core.logged_in))) {
+    return ajax.core.GET.call(null, [cljs.core.str("/favorites/list?page\x3d"), cljs.core.str(page)].join(""), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.core.favorites_list, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
   } else {
-    return client.login.user_logged_out.call(null);
+    return enfocus.core.at.call(null, "#inner-content", enfocus.core.content.call(null, client.core.not_logged_in.call(null)));
   }
 };
-client.core.show_login_header = function show_login_header() {
-  return ajax.core.GET.call(null, "/user/loggedin", new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.core.populate_login_header, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
+client.core.set_logged_in = function set_logged_in(is_logged_in) {
+  return cljs.core.swap_BANG_.call(null, client.core.logged_in, cljs.core.constantly.call(null, is_logged_in));
 };
-client.core.show_header = function show_header() {
+client.core.populate_login_header = function populate_login_header(content_handler, data) {
+  client.core.set_logged_in.call(null, data);
+  if (cljs.core.truth_(data)) {
+    client.login.show_logged_in.call(null, data);
+  } else {
+    client.login.show_logged_out.call(null);
+  }
+  if (cljs.core.truth_(content_handler)) {
+    return content_handler.call(null);
+  } else {
+    return null;
+  }
+};
+client.core.show_login_header = function show_login_header(content_handler) {
+  return ajax.core.GET.call(null, "/user/loggedin", new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), cljs.core.partial.call(null, client.core.populate_login_header, content_handler), new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
+};
+client.core.show_content = function show_content(handler) {
   enfocus.core.at.call(null, ".container", enfocus.core.do__GT_.call(null, enfocus.core.content.call(null, client.core.login_header.call(null)), enfocus.core.append.call(null, client.core.site_header.call(null)), enfocus.core.append.call(null, client.core.card.call(null)), enfocus.core.append.call(null, client.core.site_content.call(null))));
-  return client.core.show_login_header.call(null);
+  return client.core.show_login_header.call(null, handler);
 };
 client.core.load_config = function load_config() {
   return ajax.core.GET.call(null, "/config", new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.core.set_config, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
 };
 client.core.start_movies = function start_movies() {
-  client.core.show_header.call(null);
   client.core.load_config.call(null);
+  client.core.show_content.call(null, null);
   return client.core.try_load_popular_movies.call(null, 1);
 };
 client.core.start_series = function start_series() {
-  client.core.show_header.call(null);
   client.core.load_config.call(null);
+  client.core.show_content.call(null, null);
   return client.core.try_load_popular_series.call(null, 1);
 };
-var action__4426__auto___9719 = function(params__4427__auto__) {
+client.core.start_favorites = function start_favorites() {
+  client.core.load_config.call(null);
+  return client.core.show_content.call(null, function() {
+    return client.core.try_load_favorites.call(null, 1);
+  });
+};
+var action__4426__auto___13228 = function(params__4427__auto__) {
   if (cljs.core.map_QMARK_.call(null, params__4427__auto__)) {
-    var map__9717 = params__4427__auto__;
-    var map__9717__$1 = cljs.core.seq_QMARK_.call(null, map__9717) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9717) : map__9717;
-    return enfocus.core.setTimeout.call(null, function(map__9717, map__9717__$1) {
+    var map__13226 = params__4427__auto__;
+    var map__13226__$1 = cljs.core.seq_QMARK_.call(null, map__13226) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13226) : map__13226;
+    return enfocus.core.setTimeout.call(null, function(map__13226, map__13226__$1) {
       return function check__4564__auto__() {
         if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
           return client.core.start_movies.call(null);
         } else {
-          return enfocus.core.setTimeout.call(null, function(map__9717, map__9717__$1) {
+          return enfocus.core.setTimeout.call(null, function(map__13226, map__13226__$1) {
             return function() {
               return check__4564__auto__.call(null);
             };
-          }(map__9717, map__9717__$1), 10);
+          }(map__13226, map__13226__$1), 10);
         }
       };
-    }(map__9717, map__9717__$1), 0);
+    }(map__13226, map__13226__$1), 0);
   } else {
     if (cljs.core.vector_QMARK_.call(null, params__4427__auto__)) {
-      var vec__9718 = params__4427__auto__;
-      return enfocus.core.setTimeout.call(null, function(vec__9718) {
+      var vec__13227 = params__4427__auto__;
+      return enfocus.core.setTimeout.call(null, function(vec__13227) {
         return function check__4564__auto__() {
           if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
             return client.core.start_movies.call(null);
           } else {
-            return enfocus.core.setTimeout.call(null, function(vec__9718) {
+            return enfocus.core.setTimeout.call(null, function(vec__13227) {
               return function() {
                 return check__4564__auto__.call(null);
               };
-            }(vec__9718), 10);
+            }(vec__13227), 10);
           }
         };
-      }(vec__9718), 0);
+      }(vec__13227), 0);
     } else {
       return null;
     }
   }
 };
-secretary.core.add_route_BANG_.call(null, "/", action__4426__auto___9719);
-var action__4426__auto___9722 = function(params__4427__auto__) {
+secretary.core.add_route_BANG_.call(null, "/", action__4426__auto___13228);
+var action__4426__auto___13231 = function(params__4427__auto__) {
   if (cljs.core.map_QMARK_.call(null, params__4427__auto__)) {
-    var map__9720 = params__4427__auto__;
-    var map__9720__$1 = cljs.core.seq_QMARK_.call(null, map__9720) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9720) : map__9720;
-    return enfocus.core.setTimeout.call(null, function(map__9720, map__9720__$1) {
+    var map__13229 = params__4427__auto__;
+    var map__13229__$1 = cljs.core.seq_QMARK_.call(null, map__13229) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13229) : map__13229;
+    return enfocus.core.setTimeout.call(null, function(map__13229, map__13229__$1) {
       return function check__4564__auto__() {
         if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
           return client.core.start_movies.call(null);
         } else {
-          return enfocus.core.setTimeout.call(null, function(map__9720, map__9720__$1) {
+          return enfocus.core.setTimeout.call(null, function(map__13229, map__13229__$1) {
             return function() {
               return check__4564__auto__.call(null);
             };
-          }(map__9720, map__9720__$1), 10);
+          }(map__13229, map__13229__$1), 10);
         }
       };
-    }(map__9720, map__9720__$1), 0);
+    }(map__13229, map__13229__$1), 0);
   } else {
     if (cljs.core.vector_QMARK_.call(null, params__4427__auto__)) {
-      var vec__9721 = params__4427__auto__;
-      return enfocus.core.setTimeout.call(null, function(vec__9721) {
+      var vec__13230 = params__4427__auto__;
+      return enfocus.core.setTimeout.call(null, function(vec__13230) {
         return function check__4564__auto__() {
           if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
             return client.core.start_movies.call(null);
           } else {
-            return enfocus.core.setTimeout.call(null, function(vec__9721) {
+            return enfocus.core.setTimeout.call(null, function(vec__13230) {
               return function() {
                 return check__4564__auto__.call(null);
               };
-            }(vec__9721), 10);
+            }(vec__13230), 10);
           }
         };
-      }(vec__9721), 0);
+      }(vec__13230), 0);
     } else {
       return null;
     }
   }
 };
-secretary.core.add_route_BANG_.call(null, "/movies", action__4426__auto___9722);
-var action__4426__auto___9725 = function(params__4427__auto__) {
+secretary.core.add_route_BANG_.call(null, "/movies", action__4426__auto___13231);
+var action__4426__auto___13234 = function(params__4427__auto__) {
   if (cljs.core.map_QMARK_.call(null, params__4427__auto__)) {
-    var map__9723 = params__4427__auto__;
-    var map__9723__$1 = cljs.core.seq_QMARK_.call(null, map__9723) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9723) : map__9723;
-    return enfocus.core.setTimeout.call(null, function(map__9723, map__9723__$1) {
+    var map__13232 = params__4427__auto__;
+    var map__13232__$1 = cljs.core.seq_QMARK_.call(null, map__13232) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13232) : map__13232;
+    return enfocus.core.setTimeout.call(null, function(map__13232, map__13232__$1) {
       return function check__4564__auto__() {
         if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
           return client.core.start_series.call(null);
         } else {
-          return enfocus.core.setTimeout.call(null, function(map__9723, map__9723__$1) {
+          return enfocus.core.setTimeout.call(null, function(map__13232, map__13232__$1) {
             return function() {
               return check__4564__auto__.call(null);
             };
-          }(map__9723, map__9723__$1), 10);
+          }(map__13232, map__13232__$1), 10);
         }
       };
-    }(map__9723, map__9723__$1), 0);
+    }(map__13232, map__13232__$1), 0);
   } else {
     if (cljs.core.vector_QMARK_.call(null, params__4427__auto__)) {
-      var vec__9724 = params__4427__auto__;
-      return enfocus.core.setTimeout.call(null, function(vec__9724) {
+      var vec__13233 = params__4427__auto__;
+      return enfocus.core.setTimeout.call(null, function(vec__13233) {
         return function check__4564__auto__() {
           if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
             return client.core.start_series.call(null);
           } else {
-            return enfocus.core.setTimeout.call(null, function(vec__9724) {
+            return enfocus.core.setTimeout.call(null, function(vec__13233) {
               return function() {
                 return check__4564__auto__.call(null);
               };
-            }(vec__9724), 10);
+            }(vec__13233), 10);
           }
         };
-      }(vec__9724), 0);
+      }(vec__13233), 0);
     } else {
       return null;
     }
   }
 };
-secretary.core.add_route_BANG_.call(null, "/series", action__4426__auto___9725);
+secretary.core.add_route_BANG_.call(null, "/series", action__4426__auto___13234);
+var action__4426__auto___13237 = function(params__4427__auto__) {
+  if (cljs.core.map_QMARK_.call(null, params__4427__auto__)) {
+    var map__13235 = params__4427__auto__;
+    var map__13235__$1 = cljs.core.seq_QMARK_.call(null, map__13235) ? cljs.core.apply.call(null, cljs.core.hash_map, map__13235) : map__13235;
+    return enfocus.core.setTimeout.call(null, function(map__13235, map__13235__$1) {
+      return function check__4564__auto__() {
+        if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
+          return client.core.start_favorites.call(null);
+        } else {
+          return enfocus.core.setTimeout.call(null, function(map__13235, map__13235__$1) {
+            return function() {
+              return check__4564__auto__.call(null);
+            };
+          }(map__13235, map__13235__$1), 10);
+        }
+      };
+    }(map__13235, map__13235__$1), 0);
+  } else {
+    if (cljs.core.vector_QMARK_.call(null, params__4427__auto__)) {
+      var vec__13236 = params__4427__auto__;
+      return enfocus.core.setTimeout.call(null, function(vec__13236) {
+        return function check__4564__auto__() {
+          if (cljs.core.deref.call(null, enfocus.core.tpl_load_cnt) === 0) {
+            return client.core.start_favorites.call(null);
+          } else {
+            return enfocus.core.setTimeout.call(null, function(vec__13236) {
+              return function() {
+                return check__4564__auto__.call(null);
+              };
+            }(vec__13236), 10);
+          }
+        };
+      }(vec__13236), 0);
+    } else {
+      return null;
+    }
+  }
+};
+secretary.core.add_route_BANG_.call(null, "/favorites", action__4426__auto___13237);
 client.core.get_pathname = function get_pathname() {
   return[cljs.core.str(document.location.pathname)].join("");
 };
-var G__9726_9727 = new goog.History;
-goog.events.listen(G__9726_9727, goog.History.EventType.NAVIGATE, function(G__9726_9727) {
-  return function() {
-    return secretary.core.dispatch_BANG_.call(null, client.core.get_pathname.call(null));
-  };
-}(G__9726_9727));
-G__9726_9727.setEnabled(true);
+client.core.load_page = function load_page() {
+  return secretary.core.dispatch_BANG_.call(null, client.core.get_pathname.call(null));
+};
+var G__13238_13239 = new goog.History;
+goog.events.listen(G__13238_13239, goog.History.EventType.NAVIGATE, client.core.load_page);
+G__13238_13239.setEnabled(true);
 goog.provide("client.login");
 goog.require("cljs.core");
 goog.require("ajax.core");
@@ -41515,21 +41662,26 @@ client.login.close_form = function close_form() {
   return enfocus.core.at.call(null, "#login-form", enfocus.core.set_style.call(null, new cljs.core.Keyword(null, "display", "display", 2685668404), "none"));
 };
 goog.exportSymbol("client.login.close_form", client.login.close_form);
-client.login.user_logged_in = function user_logged_in(data) {
+client.login.show_logged_in = function show_logged_in(data) {
   enfocus.core.at.call(null, "#login", enfocus.core.content.call(null, client.core.logout_refs.call(null)));
   enfocus.core.at.call(null, "#logged-in-as", enfocus.core.content.call(null, (new cljs.core.Keyword(null, "name", "name", 1017277949)).cljs$core$IFn$_invoke$arity$1(data)));
-  return client.login.close_form.call(null);
+  client.login.close_form.call(null);
+  return client.core.set_logged_in.call(null, true);
 };
-client.login.user_logged_out = function user_logged_out(data) {
-  return enfocus.core.at.call(null, "#login", enfocus.core.content.call(null, client.core.login_refs.call(null)));
+client.login.show_logged_out = function show_logged_out(data) {
+  enfocus.core.at.call(null, "#login", enfocus.core.content.call(null, client.core.login_refs.call(null)));
+  return client.core.set_logged_in.call(null, false);
+};
+client.login.user_logged_in_changed = function user_logged_in_changed(data) {
+  return client.core.load_page.call(null, cljs.core.List.EMPTY);
 };
 client.login.try_login_user = function try_login_user() {
   return ajax.core.POST.call(null, "/user/login", new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "params", "params", 4313443576), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "login", "login", 1117053659), enfocus.core.from.call(null, "#user-login", enfocus.core.read_form_input.call(null)), new cljs.core.Keyword(null, "password", "password", 2230889997), enfocus.core.from.call(null, "#user-password", enfocus.core.read_form_input.call(null))], null), 
-  new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.login.user_logged_in, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
+  new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.login.user_logged_in_changed, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
 };
 goog.exportSymbol("client.login.try_login_user", client.login.try_login_user);
 client.login.try_logout_user = function try_logout_user() {
-  return ajax.core.POST.call(null, "/user/logout", new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.login.user_logged_out, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
+  return ajax.core.POST.call(null, "/user/logout", new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "handler", "handler", 1706707644), client.login.user_logged_in_changed, new cljs.core.Keyword(null, "error-handler", "error-handler", 1866823671), client.core.error_handler], null));
 };
 goog.exportSymbol("client.login.try_logout_user", client.login.try_logout_user);
 goog.provide("client.register");
