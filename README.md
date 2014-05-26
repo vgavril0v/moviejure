@@ -20,6 +20,7 @@ comments,
 favorites list,
 look and feel
 
+content metadata provided by http://www.themoviedb.org/
 
 
 ## License
